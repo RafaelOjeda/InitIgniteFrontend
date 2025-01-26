@@ -1,7 +1,7 @@
 import {Button, Form} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import {StudentData} from "./StudentList.tsx";
-import AuthServiceInstance, {UserData} from "../GeneralComponents/AuthService.tsx";
+import AuthServiceInstance, {UserDataSemester} from "../GeneralComponents/AuthService.tsx";
 
 export interface Semester {
     semester_end_date: string,
@@ -87,7 +87,7 @@ const AddStudentToSemesterForm = () => {
         const formData = new FormData(e.target as HTMLFormElement);
 
         const selectedSemester = formData.get('semester');
-        const userSemester : UserData = {
+        const userSemester : UserDataSemester = {
             studentId: selectedStudentId,
             studentName: selectedStudentName,
             semester: selectedSemester

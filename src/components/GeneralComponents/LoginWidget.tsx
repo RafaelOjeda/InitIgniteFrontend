@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import AuthServiceInstance from "./AuthService.js";
 import { TextField, Box, Container, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import AuthServiceInstance, {UserEmailAndPass} from './AuthService.tsx';
 
 
 const LoginWidget = () => {
@@ -25,28 +25,24 @@ const LoginWidget = () => {
             return;
         }
 
-        const userEmailAndPass = {}
-        userEmailAndPass['email'] = email;
-        userEmailAndPass['password'] = password; // TODO: hash the password, do not send in plaintext
+        const userEmailAndPass : UserEmailAndPass = {email: email, password: password} // TODO: hash the password, do not send in plaintext
 
-        //console.log(userEmailAndPass);
+        console.log(userEmailAndPass);
 
         const userToken = await AuthServiceInstance.loginUser(userEmailAndPass);
 
-        //console.log(userToken.userEmail);
-
-        if(userToken.userEmail === undefined) {
+        if(userToken.email === undefined) {
             setBadCredentialsMessage('Incorrect email or password!');
             return;
         }
         else {
             userToken.token = userToken.token.replace(/["]/g, '')
-            userToken.userEmail = userToken.userEmail.replace(/["]/g, '')
-            userToken.userName = userToken.userName.replace(/["]/g, '')
+            userToken.email = userToken.email.replace(/["]/g, '')
+            userToken.name = userToken.name.replace(/["]/g, '')
 
             sessionStorage.setItem('login_token', userToken.token);
-            sessionStorage.setItem('user_email', userToken.userEmail);
-            sessionStorage.setItem('name', userToken.userName);
+            sessionStorage.setItem('user_email', userToken.email);
+            sessionStorage.setItem('name', userToken.name);
             navigate("/dashboard");
         }
 

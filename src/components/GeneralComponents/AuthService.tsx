@@ -11,7 +11,7 @@ export interface UserData {
 	name: string
 }
 
-export interface UserData {
+export interface UserDataSemester {
 	studentId: string;
 	studentName: string;
 	semester: string;
