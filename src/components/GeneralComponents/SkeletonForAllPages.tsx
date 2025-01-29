@@ -13,11 +13,11 @@ const SkeletonForAllPages: React.FC<SkeletonForAllPagesProps> = ({ children }) =
         <Container fluid style={{
             padding: "0",
         }}>
-            {/*<Row>*/}
-            {/*    <Col xs={12}>*/}
-            {/*        <AccountNavbar />*/}
-            {/*    </Col>*/}
-            {/*</Row>*/}
+            <Row>
+                <Col xs={12}>
+                    <AccountNavbar />
+                </Col>
+            </Row>
                 {children}
             <Row>
                 <Col xs={12}>
