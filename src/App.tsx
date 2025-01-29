@@ -5,15 +5,12 @@ import RegisterPage from './Components/RegisterPage/RegisterPage.js';
 import ResetPasswordPage from './Components/ResetPassword/ResetPassword.js';
 // import ProtectedRoute from './Components/GeneralComponents/ProtectedRoute.js';
 import DashboardPage from './Components/DashboardPage/DashboardPage.tsx';
-// import ProfilePage from './Components/ProfilePage/ProfilePage.js';
-// import RestYourMindPage from './Components/RestYourMindPage/RestYourMindPage.js'
-// import FeelingsCheckInPage from "./Components/FeelingsCheckIn/FeelingsCheckIn.js";
-// import AmbientMusicPlayerPage from "./Components/AmbientPlayerPage/AmbientPlayerPage.js";
 import ErrorPage from "./Components/ErrorPage/ErrorPage.js"
 import ProtectedRoute from "./Components/GeneralComponents/ProtectedRoute.tsx";
 import TaskPage from "./Components/TaskPage/TaskPage.tsx";
 import EditStudentsPage from "./Components/EditStudents/EditStudentsPage.tsx";
 import EditSemestersPage from "./Components/EditSemesters/EditSemestersPage.tsx";
+import Test from "./components/Test/Test.tsx";
 
 const App = () => {
 

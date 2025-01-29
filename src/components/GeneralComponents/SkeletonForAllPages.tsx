@@ -10,16 +10,18 @@ interface SkeletonForAllPagesProps {
 
 const SkeletonForAllPages: React.FC<SkeletonForAllPagesProps> = ({ children }) => {
     return (
-        <Container fluid style={{ padding: "0" }}>
-            <Row>
-                <Col xs={12}>
-                    <AccountNavbar />
-                </Col>
-            </Row>
+        <Container fluid style={{
+            padding: "0",
+        }}>
+            {/*<Row>*/}
+            {/*    <Col xs={12}>*/}
+            {/*        <AccountNavbar />*/}
+            {/*    </Col>*/}
+            {/*</Row>*/}
                 {children}
             <Row>
                 <Col xs={12}>
-                    <Footer />
+                    {/*<Footer />*/}
                 </Col>
             </Row>
         </Container>
