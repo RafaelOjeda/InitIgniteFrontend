@@ -8,8 +8,7 @@ const EditSemestersPage = () => {
     const [formData, setFormData] = useState({
         semester_start_date: '',
         semester_end_date: '',
-        semester_id: '',
-        semester_name: ''
+        semester_id: ''
     });
 
     const handleChange = (e) => {
@@ -20,6 +19,7 @@ const EditSemestersPage = () => {
         });
     };
 
+    // @ts-ignore
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Form submitted:', formData);
@@ -62,18 +62,6 @@ const EditSemestersPage = () => {
                         value={formData.semester_id}
                         onChange={handleChange}
                         placeholder="Enter Semester ID"
-                        required
-                    />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="semester_name">
-                    <Form.Label>Semester Name</Form.Label>
-                    <Form.Control
-                        type="text"
-                        name="semester_name"
-                        value={formData.semester_name}
-                        onChange={handleChange}
-                        placeholder="Enter Semester Name"
                         required
                     />
                 </Form.Group>
