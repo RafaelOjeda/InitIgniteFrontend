@@ -21,7 +21,7 @@ const SkeletonForAllPages: React.FC<SkeletonForAllPagesProps> = ({ children }) =
                 {children}
             <Row>
                 <Col xs={12}>
-                    {/*<Footer />*/}
+                    <Footer />
                 </Col>
             </Row>
         </Container>
