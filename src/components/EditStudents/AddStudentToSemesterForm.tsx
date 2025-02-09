@@ -3,16 +3,17 @@ import {useEffect, useState} from "react";
 import {StudentData} from "./StudentList.tsx";
 import AuthServiceInstance, {UserDataSemester} from "../GeneralComponents/AuthService.tsx";
 
-export interface Semester {
-    semester_end_date: string,
-    semester_id: string,
-    semester_name: string,
-    semester_start_date: string
-}
-
 export interface SemesterData {
     status: string;
     data: Semester[];
+}
+
+export interface Semester {
+    semester_id: string;
+    semester_start_date: string;
+    semester_end_date: string;
+    teachers?: string[]; // Optional array of teacher IDs
+    teacher_students?: string[]; // Optional array of student IDs
 }
 
 export interface Student {
@@ -132,7 +133,7 @@ const AddStudentToSemesterForm = () => {
     </option>
     {semester.map((sem, index) => (
         <option key={index} value={sem.semester_id}>
-        {sem.semester_name}
+        {sem.semester_id}
         </option>
     ))}
     </Form.Select>
