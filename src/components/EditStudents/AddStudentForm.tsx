@@ -7,9 +7,6 @@ const AddStudentForm = () => {
 
     return (
         <Container className="mt-5">
-            <h2>Add Student to Semester</h2>
-            <AddStudentToSemesterForm />
-
             <AddStudentToSchoolForm />
 
             <h2>Student List by Semester</h2>
