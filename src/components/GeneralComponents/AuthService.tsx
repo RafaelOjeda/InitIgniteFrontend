@@ -40,6 +40,10 @@ export interface AddSemesterStudent {
 	student_id: string;
 }
 
+export interface UserUID {
+	uid: string | null;
+}
+
 class AuthService {
 
 	currentUser = async () => {
@@ -283,6 +287,36 @@ class AuthService {
 		} catch (error) {
 			console.error('Error deleting teacher/student from classroom:', error);
 			return { status: "error", message: error.message };
+		}
+	};
+
+	isAdmin = async (request: UserUID): Promise<boolean | null> => {
+		try {
+			const response = await fetch('http://localhost:3000/api/auth/is_admin', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(request), // Send the request object directly
+			});
+
+			if (!response.ok) {
+				const errorText = await response.text();
+				throw new Error(`Server returned ${response.status}: ${errorText}`);
+			}
+
+			const data = await response.json(); // Parse the JSON response
+
+			if (data && typeof data.isAdmin === 'boolean') {
+				return data.isAdmin;
+			} else {
+				console.error("Invalid response from /is_admin:", data);
+				return false; // Or throw an error if you prefer
+			}
+
+		} catch (error) {
+			console.error("Error checking admin status:", error);
+			return null;
 		}
 	};
 

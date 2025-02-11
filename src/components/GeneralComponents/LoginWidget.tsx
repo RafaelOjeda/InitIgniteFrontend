@@ -25,27 +25,34 @@ const LoginWidget = () => {
             return;
         }
 
-        const userEmailAndPass : UserEmailAndPass = {email: email, password: password} // TODO: hash the password, do not send in plaintext
+        const userEmailAndPass: UserEmailAndPass = { email, password };
 
-        console.log(userEmailAndPass);
+        // TODO: Hash the password on the frontend before sending it.
 
-        const userToken = await AuthServiceInstance.loginUser(userEmailAndPass);
+        try {
+            const userToken = await AuthServiceInstance.loginUser(userEmailAndPass);
 
-        if(userToken.email === undefined) {
-            setBadCredentialsMessage('Incorrect email or password!');
-            return;
-        }
-        else {
-            userToken.token = userToken.token.replace(/["]/g, '')
-            userToken.email = userToken.email.replace(/["]/g, '')
-            userToken.name = userToken.name.replace(/["]/g, '')
+            // Null/Undefined Check: Improved
+            if (!userToken || !userToken.email || !userToken.token || !userToken.name) {  // Check all essential properties
+                setBadCredentialsMessage('Incorrect email or password or missing data!'); // More informative message
+                console.error("Invalid user token received:", userToken); // Log the invalid token for debugging
+                return; // Stop the login process
+            }
 
-            sessionStorage.setItem('login_token', userToken.token);
-            sessionStorage.setItem('user_email', userToken.email);
-            sessionStorage.setItem('name', userToken.name);
+            const token = userToken.token.replace(/"/g, '');
+            const emailClean = userToken.email.replace(/"/g, '');
+            const nameClean = userToken.name.replace(/"/g, '');
+
+            sessionStorage.setItem('login_token', token);
+            sessionStorage.setItem('user_email', emailClean);
+            sessionStorage.setItem('name', nameClean);
+
             navigate("/dashboard");
-        }
 
+        } catch (error) {
+            console.error("Login error:", error);
+            setBadCredentialsMessage('An error occurred during login. Please try again later.');
+        }
     };
 
     return (
