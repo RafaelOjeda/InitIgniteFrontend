@@ -1,21 +1,42 @@
 import { useState, useEffect } from 'react';
 import { TextField, Box, Container, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import AuthServiceInstance, {UserEmailAndPass} from './AuthService.tsx';
-
+import { useNavigate, useLocation } from 'react-router-dom';
+import AuthServiceInstance, { UserEmailAndPass } from './AuthService.tsx';
 
 const LoginWidget = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [missingInfoMessage, setMissingInfoMessage] = useState("");
-    const [badCredentialsMessage, setBadCredentialsMessage] = useState("");
+    const [missingInfoMessage, setMissingInfoMessage] = useState('');
+    const [badCredentialsMessage, setBadCredentialsMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        if (sessionStorage.getItem("login_token")) {
-            navigate("/dashboard");
+        const token = sessionStorage.getItem('token');
+        if (token) {
+            checkAdminStatusAndRedirect(token);
         }
-    });
+    }, []);
+
+    const checkAdminStatusAndRedirect = async (token: string) => {
+        try {
+            const isAdmin = await AuthServiceInstance.isAdmin({ uid: token });
+            const redirectUrl = sessionStorage.getItem('redirectUrl');
+            sessionStorage.removeItem('redirectUrl');
+
+            if (isAdmin) {
+                console.log("Being redirected to: " + redirectUrl);
+                navigate(redirectUrl || '/dashboard/admin');
+            } else {
+                console.log("Being redirected to: " + redirectUrl);
+                navigate(redirectUrl || '/dashboard/user');
+            }
+        } catch (error) {
+            console.error('Error checking admin status:', error);
+            navigate('/');
+        }
+    };
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -25,89 +46,95 @@ const LoginWidget = () => {
             return;
         }
 
-        const userEmailAndPass : UserEmailAndPass = {email: email, password: password} // TODO: hash the password, do not send in plaintext
+        const userEmailAndPass: UserEmailAndPass = { email, password };
 
-        console.log(userEmailAndPass);
+        setIsLoading(true);
+        setMissingInfoMessage(''); // Clear previous messages
+        setBadCredentialsMessage('');
 
-        const userToken = await AuthServiceInstance.loginUser(userEmailAndPass);
+        try {
+            const userToken = await AuthServiceInstance.loginUser(userEmailAndPass);
 
-        if(userToken.email === undefined) {
-            setBadCredentialsMessage('Incorrect email or password!');
-            return;
+            if (!userToken || !userToken.email || !userToken.token || !userToken.name) {
+                setBadCredentialsMessage('Incorrect email or password or missing data!');
+                console.error('Invalid user token received:', userToken);
+                return;
+            }
+
+            const token = userToken.token.replaceAll('"', '');
+            const emailClean = userToken.email.replaceAll('"', '');
+            const nameClean = userToken.name.replaceAll('"', '');
+
+            sessionStorage.setItem('token', token);
+            sessionStorage.setItem('user_email', emailClean);
+            sessionStorage.setItem('name', nameClean);
+
+            await checkAdminStatusAndRedirect(token);
+
+        } catch (error) {
+            console.error('Login error:', error);
+            if (error.message.includes("Invalid credentials")) {
+                setBadCredentialsMessage('Incorrect email or password.');
+            } else if (error.message.includes("Network Error")) {
+                setBadCredentialsMessage('A network error occurred. Please try again later.');
+            } else {
+                setBadCredentialsMessage('An error occurred during login. Please try again later.');
+            }
+
+        } finally {
+            setIsLoading(false);
         }
-        else {
-            userToken.token = userToken.token.replace(/["]/g, '')
-            userToken.email = userToken.email.replace(/["]/g, '')
-            userToken.name = userToken.name.replace(/["]/g, '')
-
-            sessionStorage.setItem('login_token', userToken.token);
-            sessionStorage.setItem('user_email', userToken.email);
-            sessionStorage.setItem('name', userToken.name);
-            navigate("/dashboard");
-        }
-
     };
 
     return (
         <Container>
             <form onSubmit={handleLogin}>
-                <div className="mb-3">
-                    <TextField
-                        className="form-control"
-                        id="userEmail"
-                        label="Email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="email@example.com"
-                        margin="normal"
-                        size="small"
-                    />
-                </div>
-                <div className="mb-3">
-                    <TextField
-                        className="form-control"
-                        id="userPassword"
-                        label="Password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter your password"
-                        margin="normal"
-                        size="small"
-                    />
-                </div>
-                <Box sx={{ bgcolor: "white", width: '200px', borderRadius: '15px', marginLeft: '175px'}}>
-                    {missingInfoMessage && (
-                        <Typography variant="body2" color="error" align="center">
-                            {missingInfoMessage}
-                        </Typography>
+                <TextField
+                    className="form-control"
+                    id="userEmail"
+                    label="Email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="email@example.com"
+                    margin="normal"
+                    size="small"
+                    error={!!missingInfoMessage || !!badCredentialsMessage}
+                    helperText={missingInfoMessage || badCredentialsMessage}
+                />
+                <TextField
+                    className="form-control"
+                    id="userPassword"
+                    label="Password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    margin="normal"
+                    size="small"
+                    error={!!missingInfoMessage || !!badCredentialsMessage}
+                    helperText={missingInfoMessage || badCredentialsMessage}
+                />
 
-
-                    )}
-                    {badCredentialsMessage && (
-                        <Typography variant="body2" color="error" align="center">
-                            {badCredentialsMessage}
-                        </Typography>
-                    )}
-                </Box>
                 <Box sx={{
                     mt: '1rem',
                     display: 'flex',
                     justifyContent: 'center',
                 }}>
-                    <button className="btn btn-success" type="submit" variant="contained" style={{ marginRight: '0.5rem' }}>Login</button>
+                    <button className="btn btn-success" type="submit" variant="contained" disabled={isLoading} style={{ marginRight: '0.5rem' }}>
+                        {isLoading ? 'Loading...' : 'Login'}
+                    </button>
                     <button className="btn btn-primary" type="button" onClick={() => navigate('/register')} variant="contained" style={{ marginRight: '0.5rem' }}>Sign up for free now!</button>
                     <button className="btn btn-secondary" type="button" onClick={() => navigate('/forgot-password')} variant="contained">Forgot password?</button>
                 </Box>
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '1rem',
+                }}>
+                    <button className="btn btn-info" onClick={() => navigate('/')} variant="contained">Return to Home</button>
+                </Box>
             </form>
-            <Box sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginTop: '1rem',
-            }}>
-                <button className="btn btn-info" onClick={() => navigate('/')} variant="contained">Return to Home</button>
-            </Box>
         </Container>
     );
 };

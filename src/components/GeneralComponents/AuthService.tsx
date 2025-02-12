@@ -40,6 +40,10 @@ export interface AddSemesterStudent {
 	student_id: string;
 }
 
+export interface UserUID {
+	uid: string | null;
+}
+
 class AuthService {
 
 	currentUser = async () => {
@@ -283,6 +287,49 @@ class AuthService {
 		} catch (error) {
 			console.error('Error deleting teacher/student from classroom:', error);
 			return { status: "error", message: error.message };
+		}
+	};
+
+	isAdmin = async (request: UserUID): Promise<boolean | null> => {
+		console.log("isAdmin triggered")
+		try {
+			const response = await fetch('http://localhost:3000/api/auth/is_admin', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(request), // Send the request object directly
+			});
+
+			if (!response.ok) {
+				const errorText = await response.text(); // Get error message from server
+				let errorMessage = `Server returned ${response.status}: ${errorText}`;
+
+				// Check for specific status codes (e.g., 401, 403) for custom error handling
+				if (response.status === 401) {
+					errorMessage = "Unauthorized. Please log in.";
+				} else if (response.status === 403) {
+					errorMessage = "Forbidden. You do not have admin access.";
+				}
+
+				throw new Error(errorMessage); // Throw the more specific error
+			}
+
+			const data = await response.json();
+
+			if (data && typeof data.isAdmin === 'boolean') {
+				return data.isAdmin;
+			} else {
+				console.error("Invalid response from /is_admin:", data);
+				return false; // Or throw an error if you prefer
+			}
+
+		} catch (error: any) { // Type the error as any or Error
+			console.error("Error checking admin status:", error.message); // Log the error message
+			if (error.message.includes("NetworkError")) { // Example: check if the server is down
+				// Handle network error (e.g., display a "server not available" message)
+			}
+			return null;
 		}
 	};
 
