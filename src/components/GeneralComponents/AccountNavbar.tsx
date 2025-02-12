@@ -24,7 +24,7 @@ const AccountNavbar = () => {
 						<Nav.Link as={RouterLink} to="/" className="text-white">Home</Nav.Link>
 					</Nav.Item>
 
-					{sessionStorage.getItem("user_name") ? (
+					{sessionStorage.getItem("name") ? (
 						<>
 							<Nav.Item>
 								<Nav.Link as={RouterLink} to="/dashboard" className="text-white">Dashboard</Nav.Link>
@@ -33,7 +33,7 @@ const AccountNavbar = () => {
 								<Nav.Link onClick={handleLogout} className="text-white">Logout</Nav.Link>
 							</Nav.Item>
 							<Nav.Item>
-								<span className="navbar-text text-white">Hello, {sessionStorage.getItem("user_name")}</span>
+								<span className="navbar-text text-white">Hello, {sessionStorage.getItem("name")}</span>
 							</Nav.Item>
 						</>
 					) : (
