@@ -11,8 +11,6 @@ const EditStudentsPage = () => {
 
             <h1>Edit Students</h1>
             <AddStudentForm />
-            {/*temporary removal first working on addstudentform*/}
-            {/*<StudentList />*/}
         </SkeletonForAllPages>
     )
 }
