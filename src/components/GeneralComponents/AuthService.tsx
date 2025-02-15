@@ -8,6 +8,16 @@ interface AddTeacherStudentToClassroomRequest extends ClassroomRequest {
 	teacher_student_id: string;
 }
 
+interface User {
+	status: "success" | "error"; // Status can be either "success" or "error"
+	data: {
+		teacher_ids: string[]; // Array of teacher IDs
+		active_semesters: string[]; // Array of active semesters (empty in this case)
+		name: string; // Name of the user
+		semester_id: string[]; // Array of semester IDs
+		email: string; // Email of the user
+	};
+}
 
 export interface UserEmailAndPass {
 	email : string,
@@ -42,6 +52,32 @@ export interface AddSemesterStudent {
 
 export interface UserUID {
 	uid: string | null;
+}
+
+interface TeacherFields {
+	Name: string;
+	"School Name": string;
+	"School Address": string;
+	"Phone Number": string;
+	"Preferred Day": string[];
+	"Estimate Amount of Students Attending the Class": number;
+	"Preferred Day copy"?: string[]; // Optional property
+	"Any additional comments that are not covered with the above"?: string; // Optional
+	"Preferred Language to Learn": string;
+	"Available Time for Preferred Days": string[];
+	"Name copy"?: string; // Optional
+	// ... other fields as needed
+}
+
+interface Teacher {
+	id: string;
+	fields: TeacherFields;
+}
+
+interface TeacherResponse {
+	status: "success" | "error"; // Use a union type for status
+	teacher?: Teacher; // Teacher is optional in case of error
+	message?: string; // Error message
 }
 
 class AuthService {
@@ -158,6 +194,17 @@ class AuthService {
 		}
 	};
 
+	getUser = async (user_id : User) => {
+		return fetch('http://localhost:3000/api/get/user', {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(user_id)
+		}).then(response => response.json()
+		).catch(() => console.error('There was some kind of getUser error:', user_id));
+	}
 
 	getUsers = async (semester_id : SemesterID) => {
 		return fetch('http://localhost:3000/api/get/users', {
@@ -209,6 +256,37 @@ class AuthService {
 		}).then(response => response.json()
 		).catch(() => console.error('There was some kind of issue!'))
 	}
+
+	getTeacher = async (teacherId: string): Promise<Teacher | null> => {
+		try {
+			const response = await fetch('http://localhost:3000/api/get/teacher', {
+				method: 'POST',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ teacher_id: teacherId }),
+			});
+
+			if (!response.ok) {
+				const errorData: TeacherResponse = await response.json(); // Type the error response
+				throw new Error(`${response.status} ${response.statusText}: ${errorData.message || 'Error fetching teacher'}`);
+			}
+
+			const data: TeacherResponse = await response.json(); // Type the successful response
+
+			if (data.status === "success" && data.teacher) { // Check for success and existence of teacher
+				return data.teacher;
+			} else {
+				throw new Error("Invalid response from server"); // Handle unexpected response
+			}
+
+
+		} catch (error) {
+			console.error('Error fetching teacher:', error);
+			throw error; // Re-throw the error
+		}
+	};
 
 	getClassroom = async (classroomRequest: ClassroomRequest) => {
 		try {

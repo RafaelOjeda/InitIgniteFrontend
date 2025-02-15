@@ -1,172 +1,55 @@
-import './Test.css';
-import {Carousel, Col, Row} from 'react-bootstrap';
+import React from 'react';
+import { Container, Row, Col } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import SchoolGeneralInfo from './SchoolGeneralInfo';
+import TeacherStudentSchedule from './TeacherStudentSchedule';
 
-import { useState, useEffect } from 'react';
-
-const FullScreenCarousel = () => {
-    const [isCarouselVisible, setIsCarouselVisible] = useState(true);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsCarouselVisible(window.innerWidth <= 992); // Adjust breakpoint as needed
-        };
-
-        window.addEventListener("resize", handleResize);
-        handleResize(); // Initial check on load
-
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
+const Test: React.FC = () => {
+    // Frosted glass style for the boxes
+    const frostedBoxStyle: React.CSSProperties = {
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: '15px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        minHeight: '200px',
+        minWidth: '200px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        fontSize: '1.25rem',
+        padding: '20px',
+        margin: '15px'
+    };
 
     return (
-        isCarouselVisible && (
-            <Carousel interval={3000} variant="dark">
-                <Carousel.Item style={{ width: '100vw' }}>
-                    <div
-                        style={{
-                            height: "100vh",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center"
-                        }}
-                    >
-                        <div className="text-center">
-                            <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: ".5rem" }}>Learn to Teach</h1>
-                            <p>Empower yourself to educate future generations.</p>
-                        </div>
-                    </div>
-                </Carousel.Item>
+        <Container fluid className="m-0 p-0" style={{
+            minHeight: "100vh",
+            backgroundImage: "url(background.jpg)",
+            backgroundSize: "cover",
+            position: 'relative'
+        }}>
+            {/* Original Content Section */}
+            <div className="d-flex flex-column d-md-block" style={{ minHeight: "100vh" }}>
+                <SchoolGeneralInfo />
+                <TeacherStudentSchedule />
+            </div>
 
-                <Carousel.Item style={{ width: '100vw' }}>
-                    <div
-                        style={{
-                            height: "100vh",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            backgroundColor: "#7ed957"
-                        }}
-                    >
-                        <div className="text-center text-dark">
-                            <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: ".5rem" }}>Master Public Speaking</h1>
-                            <p>Gain confidence and become an effective communicator.</p>
-                        </div>
+            {/* Custom Columns with Frosted Effect */}
+            <Row className="gx-5 m-0 p-0 justify-content-center">
+                <Col xs={12} md={6} className="m-0 p-0 d-flex justify-content-center">
+                    <div style={frostedBoxStyle}>
+                        Custom Column Content 1
                     </div>
-                </Carousel.Item>
-
-                <Carousel.Item style={{ width: '100vw' }}>
-                    <div
-                        style={{
-                            height: "100vh",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center"
-                        }}
-                    >
-                        <div className="text-center">
-                            <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: ".5rem" }}>Explore Computational Thinking</h1>
-                            <p>Develop essential 21st-century skills.</p>
-                        </div>
+                </Col>
+                <Col xs={12} md={6} className="m-0 p-0 d-flex justify-content-center">
+                    <div style={frostedBoxStyle}>
+                        Custom Column Content 2
                     </div>
-                </Carousel.Item>
-            </Carousel>
-        )
+                </Col>
+            </Row>
+        </Container>
     );
 };
 
-
-
-const Jumbotron = () => {
-    return (
-        <div style={{height: "100vh", overflow: "hidden"}}>
-            <Row style={{height: "100%"}}>
-                <Col
-                    md={4}
-                    style={{
-                        backgroundColor: "#1a1a1a",
-                        textAlign: "center",
-                        color: "#FFF",
-                        height: "100vh",
-                        padding: "20rem 3rem",
-                        position: "relative", // Added to make the column a positioning context
-                    }}>
-                    <h1 style={{fontSize: "3rem", fontWeight: "bold", marginBottom: ".5rem"}}>LEARN...</h1>
-                    <ul style={{
-                        listStyleType: "none",
-                        textAlign: "left"
-                    }}>
-                        <li style={{fontSize: "2rem"}}>• to teach students K-12</li>
-                        <li style={{fontSize: "2rem"}}>• to strengthen public speaking skills</li>
-                    </ul>
-
-                </Col>
-
-                <Col md={4}
-                     style={{
-                         backgroundColor: "#7ed957",
-                         textAlign: "center",
-                         color: "#1a1a1a",
-                         padding: "20rem 3rem",
-                         position: "relative",
-                     }}
-                >
-                    <h1 style={{fontSize: "3rem", fontWeight: "bold", marginBottom: ".5rem"}}>TEACH...</h1>
-                    <ul style={{
-                        listStyleType: "none",
-                        textAlign: "left"
-                    }}>
-                        <li style={{fontSize: "2rem"}}>• foundational topics on computational thinking</li>
-                        <li style={{fontSize: "2rem"}}>• semester long course currated by you</li>
-                    </ul>
-
-                </Col>
-
-                <Col
-                    md={4}
-                    style={{
-                        backgroundColor: "#1a1a1a",
-                        textAlign: "center",
-                        color: "#FFF",
-                        padding: "20rem 3rem",
-                        position: "relative",
-                    }}>
-                    <h1 style={{fontSize: "3rem", fontWeight: "bold", marginBottom: ".5rem"}}>GROW...</h1>
-                    <ul style={{
-                        listStyleType: "none",
-                        textAlign: "left"
-                    }}>
-                        <li style={{fontSize: "2rem"}}>• counts as an internship on your transcript</li>
-                        <li style={{fontSize: "2rem"}}>• young minds with their passion for tech</li>
-                    </ul>
-
-
-                </Col>
-            </Row>
-        </div>
-    )
-}
-
-export default function Test() {
-    const [isCarouselVisible, setIsCarouselVisible] = useState(window.innerWidth <= 992);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsCarouselVisible(window.innerWidth <= 992); // Adjust breakpoint as needed
-        };
-
-        window.addEventListener("resize", handleResize);
-
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
-
-    return (
-        <>
-            {isCarouselVisible ? <FullScreenCarousel /> : <Jumbotron />}
-        </>
-    );
-}
-
-
+export default Test;
