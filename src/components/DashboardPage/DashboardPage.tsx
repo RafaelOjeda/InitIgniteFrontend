@@ -1,68 +1,47 @@
 import "./DashboardPageStyling/DashboardPageStyling.scss";
 import SkeletonForAllPages from "../GeneralComponents/SkeletonForAllPages.tsx";
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Container } from 'react-bootstrap'; // Import Container
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const DashboardPage = () => {
-	
 	return (
 		<SkeletonForAllPages>
-			<Row className="mb-3">
-				<Col xs={12}>
-					<div style={{
-						backgroundColor: '#DAFF7D',
-						padding: '25px',
-						textAlign: 'center',
-						borderRadius: '30px',
-					}}>
-						<a href={"/dashboard/admin/edit/semesters"}> Start Semester </a>
-					</div>
-				</Col>
-			</Row>
+			{/* Wrap the content in a Container with min-vh-100 */}
+			<Container style={{ minHeight: '90vh' }} className="d-flex flex-column justify-content-center">
+				{/* Start Semester and Manage Students in the same row */}
+				<Row className="mb-3">
+					<Col xs={6}>
+						<div className="bg-warning p-5 text-center rounded-3 d-flex align-items-center justify-content-center" style={{ height: '200px' }}>
+							<a href={"/dashboard/admin/edit/semesters"} className="text-decoration-none text-dark">Start Semester</a>
+						</div>
+					</Col>
+					<Col xs={6}>
+						<div className="bg-warning p-5 text-center rounded-3 d-flex align-items-center justify-content-center" style={{ height: '200px' }}>
+							<a href={"/dashboard/admin/edit/students"} className="text-decoration-none text-dark">Manage Students</a>
+						</div>
+					</Col>
+				</Row>
 
-			<Row className="mb-3">
-				<Col xs={12}>
-					<div style={{
-						backgroundColor: '#DAFF7D',
-						padding: '25px',
-						textAlign: 'center',
-						borderRadius: '30px',
-					}}>
-						<a href={"/dashboard/add/task"}>Manage Task</a>
-					</div>
-				</Col>
-			</Row>
+				{/* Manage Task */}
+				<Row className="mb-3">
+					<Col xs={12}>
+						<div className="bg-warning p-5 text-center rounded-3">
+							<a href={"/dashboard/add/task"} className="text-decoration-none text-dark">Manage Task</a>
+						</div>
+					</Col>
+				</Row>
 
-			<Row className="mb-3">
-				<Col xs={12}>
-					<div style={{
-						backgroundColor: '#DAFF7D',
-						padding: '25px',
-						textAlign: 'center',
-						borderRadius: '30px',
-					}}>
-						<a href={"/dashboard/admin/edit/students"}>Manage Students</a>
-					</div>
-				</Col>
-			</Row>
-
-			<Row className="mb-3">
-				<Col xs={12}>
-					<div style={{
-						backgroundColor: '#DAFF7D',
-						padding: '25px',
-						textAlign: 'center',
-						borderRadius: '30px',
-					}}>
-						Add Announcement
-					</div>
-				</Col>
-			</Row>
-
+				{/* Announcements */}
+				<Row className="mb-3">
+					<Col xs={12}>
+						<div className="bg-warning p-5 text-center rounded-3">
+							Add Announcement
+						</div>
+					</Col>
+				</Row>
+			</Container>
 		</SkeletonForAllPages>
-
 	);
-
 }
 
 export default DashboardPage;
