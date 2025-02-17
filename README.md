@@ -14,6 +14,8 @@ Starting server
 npm run dev
 ```
 
+This will not fully run unless uses alongside https://github.com/RafaelOjeda/InitIgniteBackend  
+
 ## MVP
 - I am an admain for a semester and I should be able to assign teacher-students to K-12 teachers using the Airtable survey in order to double check the students schedule.
 - I am a teacher-student and when I am assigned to a K-12 teacher I should be able to see their contact information as well as the other teacher-students that I will be working with
